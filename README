@@ -1,0 +1,7 @@
+web is the Go toolkit for web services.
+
+Included packages:
+
+messages
+|   Package messages provides a declarative and composable
+|   structure for defining HTTP responses in Go.
