@@ -5,3 +5,8 @@ Included packages:
 messages
 |   Package messages provides a declarative and composable
 |   structure for defining HTTP responses in Go.
+
+middleware
+|   Package middleware provides composable HTTP middleware
+|   for use with net/http. It includes utilities for panic
+|   recovery, access logging, and middleware chaining.
