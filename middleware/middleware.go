@@ -12,36 +12,6 @@ import (
 	"time"
 )
 
-// Queue composes a sequence of middleware in
-// first-in-first-out (FIFO) order. The first middleware
-// passed in will be the outermost, and the last will
-// be closest to the final handler.
-//
-// i.e. Queue(m1, m2)(handler) = m2(m1(handler)).
-func Queue(ms ...func(http.Handler) http.Handler) func(http.Handler) http.Handler {
-	return func(h http.Handler) http.Handler {
-		for i := range ms {
-			h = ms[i](h)
-		}
-		return h
-	}
-}
-
-// Stack composes a sequence of middleware in
-// last-in-first-out (LIFO) order. The first middleware
-// passed in will be closest to the final handler,
-// and the last will be the outermost.
-//
-// i.e. Stack(m1, m2)(handler) = m1(m2(handler)).
-func Stack(ms ...func(http.Handler) http.Handler) func(http.Handler) http.Handler {
-	return func(h http.Handler) http.Handler {
-		for i := range ms {
-			h = ms[len(ms)-1-i](h)
-		}
-		return h
-	}
-}
-
 // captureWriter wraps http.ResponseWriter and captures
 // the HTTP status code written to the client. It is used
 // internally by AccessLogger.
@@ -97,7 +67,7 @@ func AccessLogger(logger *slog.Logger, prefix string) func(h http.Handler) http.
 // delegates to the fallback handler.
 //
 // If logger is nil, slog.Default() is used.
-func RecoverAndHandle(fallback http.Handler, logger *slog.Logger) func(h http.Handler) http.Handler {
+func RecoverAndHandle(logger *slog.Logger, fallback http.Handler) func(h http.Handler) http.Handler {
 	if logger == nil {
 		logger = slog.Default()
 	}

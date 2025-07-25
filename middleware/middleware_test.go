@@ -13,46 +13,6 @@ import (
 
 const errorString = "\nGot:\t%v\nWant:\t%v\n"
 
-func TestQueueAndStack(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { w.Write([]byte("core")) })
-
-	// sign is middleware that writes msg into w. In this
-	// testing context, it is used to reveal the sequence
-	// of execution.
-	sign := func(msg string) func(h http.Handler) http.Handler {
-		return func(h http.Handler) http.Handler {
-			return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				w.Write([]byte(msg))
-				h.ServeHTTP(w, r)
-			})
-		}
-	}
-	ms := []func(h http.Handler) http.Handler{sign("m1_"), sign("m2_")}
-
-	cases := map[string]struct {
-		handler http.Handler
-		want    string
-	}{
-		"queue": {
-			handler: Queue(ms...)(handler),
-			want:    "m2_m1_core",
-		},
-		"stack": {
-			handler: Stack(ms...)(handler),
-			want:    "m1_m2_core",
-		},
-	}
-	for name, c := range cases {
-		t.Run(name, func(t *testing.T) {
-			w := httptest.NewRecorder()
-			c.handler.ServeHTTP(w, httptest.NewRequest(http.MethodGet, "/", nil))
-			if got := w.Body.String(); got != c.want {
-				t.Errorf(errorString, got, c.want)
-			}
-		})
-	}
-}
-
 func TestCaptureWriter_WriteHeader(t *testing.T) {
 	cases := map[string]struct {
 		status     int
@@ -179,7 +139,7 @@ func TestRecoverAndHandle(t *testing.T) {
 	for name, c := range cases {
 		t.Run(name, func(t *testing.T) {
 			w := httptest.NewRecorder()
-			h := RecoverAndHandle(fallback, c.logger)(handler)
+			h := RecoverAndHandle(c.logger, fallback)(handler)
 			h.ServeHTTP(w, httptest.NewRequest(http.MethodGet, c.url, nil))
 			if got := w.Code; got != c.wantStatus {
 				t.Fatalf(errorString, got, c.wantStatus)

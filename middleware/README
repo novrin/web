@@ -1,0 +1,26 @@
+Ideas Explored and Rejected (EARs):
+
+* Rev	Provide Queue/Stack as middleware arrangement functions
+
+	Present in v0.2.0; removed in v0.3.0 on 2025-07-25	
+
+	While these convenience functions for chaining
+	middleware seem helpful, they obscure execution order 
+	and introduce ambiguity in naming. For example, does
+	Queue imply middleware is applied in first-in-first-out
+	order, or executed that way - which is arrangement in
+	precisely the reverse order? Such abstractions 
+	sacrifice clarity for superficially cleaner code.
+
+
+* Prop	Include 'common' header-setting middleware
+	
+	Rejected on 2025-07-25
+
+	Middleware that sets common headers - e.g., CORS or 
+	OWASP secure headers - can simplify security 
+	configuration. However, when additional headers are set
+	within handlers, reasoning about the final response
+	requires checking multiple places. This breaks locality
+	of behavior and reduces clarity, expecially in light of
+	the Response representation in package messsages.
