@@ -7,7 +7,7 @@ web is the Go toolkit and guide for web services:
 
 	-------------------------------------------------------
 
-	Present in v0.2.0; removed v0.3.0 on 2025-08-01
+	Present in v0.3.0; removed v0.4.0 on 2025-08-01
 
 	While adopting a declarative approach in handlers 
 	remains beneficial, this specific package was 
