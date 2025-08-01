@@ -1,9 +1,62 @@
-web is the Go toolkit for web services:
+web is the Go toolkit and guide for web services:
 
-* messages
+* messages (DEFUNCT)
 
-	Package messages provides a declarative and composable
+	Package messages provided a declarative and composable
 	structure for defining HTTP responses in Go.
+
+	-------------------------------------------------------
+
+	Present in v0.2.0; removed v0.3.0 on 2025-08-01
+
+	While adopting a declarative approach in handlers 
+	remains beneficial, this specific package was 
+	ultimately unnecessary for the following reasons:
+
+	- Implicit values: Struct-based response types 
+	  inherently permit fields to hold zero values, 
+	  defeating the purpose of transparency in handlers.
+
+	- Unnecessary abstraction: The package required 
+	  adapters converting to http.Handler or 
+	  http.HandlerFunc to process the declarative Response 
+	  type, introducing unnecessary complexity.
+
+	- Logging redundancy: Errors encountered in handlers,
+	  before a response is even needed, are typically logged 
+	  there by the application's logging mechanism. 
+	  Providing that logger on this package level is 
+	  redundant and was architecturally misplaced.
+	
+	- Simplicity via application structs: Defining receiver 
+	  methods on application-specific structs containing 
+	  necessary dependencies (e.g., a logger), results in
+	  a simpler, clearer design. This avoids the extra
+	  abstraction layers, reduces cognitive load, and
+	  makes the response construction clearer and more
+	  maintainable.
+
+	Example of a simplified approach:
+
+	|	type application struct {
+	|		log *slog.Logger
+	|	}
+	|
+	|	func (app application) Respond(w http.ResponseWriter, status int, header http.Header, body []byte) {
+	|		for k, vals := range header {
+	|			for _, v := range vals { 	
+	|				w.Header().Add(k, v)	
+	|			}
+	|		}
+	|		
+	|		w.WriteHeader(status)
+	|		if body != nil {
+	|			if _, err := w.Write(body); err != nil {
+	|				// Status commited - too late to send HTTP error response; just log it.	
+	|				app.log.Error("Respond write error: " + err.Error()	
+	|			}
+	|		}
+	|	}
 
 * middleware
 
