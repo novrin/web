@@ -75,7 +75,7 @@ func RecoverAndHandle(logger *slog.Logger, fallback http.Handler) func(h http.Ha
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			defer func() {
 				if rec := recover(); rec != nil {
-					logger.Error("PANIC caught by middleware.PanicBroker",
+					logger.Error("PANIC caught by middleware.RecoverAndHandle",
 						slog.String("error", fmt.Sprintf("%v", rec)),
 						slog.Any("stack", strings.Split(string(debug.Stack()), "\n")),
 					)
