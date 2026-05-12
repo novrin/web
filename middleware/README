@@ -2,7 +2,7 @@ Ideas Explored and Rejected (EARs):
 
 * Rev	Provide Queue/Stack as middleware arrangement functions
 
-	Present in v0.2.0; removed in v0.3.0 on 2025-07-25	
+	Present in v0.2.0; removed in v0.3.0 on 2025-07-25
 
 	While these convenience functions for chaining
 	middleware seem helpful, they obscure execution order 
