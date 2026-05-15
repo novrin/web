@@ -58,7 +58,7 @@ func AccessLogger(logger *slog.Logger, prefix string) func(h http.Handler) http.
 				slog.String("dest", r.URL.RequestURI()),
 				slog.String("proto", r.Proto),
 				slog.Int("status", rw.status),
-				slog.String("user-agent", r.Header.Get("User-Agent")),
+				slog.String("user-agent", r.UserAgent()),
 				slog.Duration("ttr", duration),
 			)
 		})
@@ -116,12 +116,11 @@ func RequestLogger(logger *slog.Logger, prefix string) func(http.RoundTripper) h
 
 			logger.Info(
 				prefix,
-				slog.String("src", r.RemoteAddr),
 				slog.String("method", r.Method),
 				slog.String("dest", r.URL.String()),
 				slog.String("proto", r.Proto),
 				slog.Int("status", resp.StatusCode),
-				slog.String("user-agent", r.Header.Get("User-Agent")),
+				slog.String("user-agent", r.UserAgent()),
 				slog.Duration("ttr", duration),
 			)
 

@@ -181,7 +181,6 @@ func TestRequestLogger(t *testing.T) {
 		return &http.Response{StatusCode: http.StatusOK, Request: r}, nil
 	})
 	substrings := []string{
-		"src=",
 		"method=",
 		"dest=",
 		"proto=",
